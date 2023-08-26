@@ -47,25 +47,29 @@ class Player extends SpriteGroupComponent<PlayerState>
     await super.onLoad();
 
     // Core gameplay: Add circle hitbox to Dash
-
-    // Add a Player to the game: loadCharacterSprites
-    // Add a Player to the game: Default Dash onLoad to center state
+    await _loadCharacterSprites();
+    current = PlayerState.center;
   }
 
   @override
   void update(double dt) {
-    // Add a Player to the game: Add game state check
+    if (gameRef.gameManager.isIntro || gameRef.gameManager.isGameOver) return;
 
-    // Add a Player to the game: Add calcualtion for Dash's horizontal velocity
+    _velocity.x = _hAxisInput * jumpSpeed; // ... to here.
 
     final double dashHorizontalCenter = size.x / 2;
 
-    // Add a Player to the game: Add infinite side boundaries logic
+    if (position.x < dashHorizontalCenter) {
+      // Add lines from here...
+      position.x = gameRef.size.x - (dashHorizontalCenter);
+    }
+    if (position.x > gameRef.size.x - (dashHorizontalCenter)) {
+      position.x = dashHorizontalCenter;
+    } // ... to here.
 
     // Core gameplay: Add gravity
 
-    // Add a Player to the game: Calculate Dash's current position based on
-    // her velocity over elapsed time since last update cycle
+    position += _velocity * dt; // Add this line
     super.update(dt);
   }
 
@@ -81,7 +85,9 @@ class Player extends SpriteGroupComponent<PlayerState>
   void moveLeft() {
     _hAxisInput = 0;
 
-    // Add a Player to the game: Add logic for moving left
+    current = PlayerState.left; // Add this line
+
+    _hAxisInput += movingLeftInput;
   }
 
   void moveRight() {
