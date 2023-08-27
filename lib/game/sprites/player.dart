@@ -77,7 +77,13 @@ class Player extends SpriteGroupComponent<PlayerState>
   bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
     _hAxisInput = 0;
 
-    // Add a Player to the game: Add keypress logic
+    if (keysPressed.contains(LogicalKeyboardKey.arrowLeft)) {
+     moveLeft();
+   }
+
+   if (keysPressed.contains(LogicalKeyboardKey.arrowRight)) {
+     moveRight();
+   }  
 
     return true;
   }
@@ -85,7 +91,7 @@ class Player extends SpriteGroupComponent<PlayerState>
   void moveLeft() {
     _hAxisInput = 0;
 
-    current = PlayerState.left; // Add this line
+    current = PlayerState.left; 
 
     _hAxisInput += movingLeftInput;
   }
@@ -93,7 +99,9 @@ class Player extends SpriteGroupComponent<PlayerState>
   void moveRight() {
     _hAxisInput = 0;
 
-    // Add a Player to the game: Add logic for moving right
+    current = PlayerState.right;                                     
+
+   _hAxisInput += movingRightInput; 
   }
 
   void resetDirection() {
