@@ -73,7 +73,7 @@ class ObjectManager extends Component with HasGameRef<DoodleDash> {
 
       _cleanupPlatforms();
       _maybeAddEnemy();
-      // Powerups: Add call to _maybeAddPowerup();
+      _maybeAddPowerup();
     }
 
     super.update(dt);
@@ -103,6 +103,12 @@ class ObjectManager extends Component with HasGameRef<DoodleDash> {
         enableSpecialty('spring');
       case 2:
         enableSpecialty('broken');
+      case 3: 
+        enableSpecialty('noogler');
+        break;
+      case 4:
+        enableSpecialty('rocket');
+        break;
       case 5:
         enableSpecialty('enemy');
     }
@@ -191,6 +197,40 @@ class ObjectManager extends Component with HasGameRef<DoodleDash> {
     while (_enemies.isNotEmpty && _enemies.first.position.y > screenBottom) {
       remove(_enemies.first);
       _enemies.removeAt(0);
+    }
+  }
+
+  final List<PowerUp> _powerups = []; // Add lines from here...
+
+  void _maybeAddPowerup() {
+    if (specialPlatforms['noogler'] == true &&
+        probGen.generateWithProbability(20)) {
+      var nooglerHat = NooglerHat(
+        position: Vector2(_generateNextX(75), _generateNextY()),
+      );
+      add(nooglerHat);
+      _powerups.add(nooglerHat);
+    } else if (specialPlatforms['rocket'] == true &&
+        probGen.generateWithProbability(15)) {
+      var rocket = Rocket(
+        position: Vector2(_generateNextX(50), _generateNextY()),
+      );
+      add(rocket);
+      _powerups.add(rocket);
+    }
+
+    _cleanupPowerups();
+  }
+
+  void _cleanupPowerups() {
+    final screenBottom = gameRef.player.position.y +
+        (gameRef.size.x / 2) +
+        gameRef.screenBufferSpace;
+    while (_powerups.isNotEmpty && _powerups.first.position.y > screenBottom) {
+      if (_powerups.first.parent != null) {
+        remove(_powerups.first);
+      }
+      _powerups.removeAt(0);
     }
   }
 }
