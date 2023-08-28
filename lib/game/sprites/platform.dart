@@ -44,9 +44,27 @@ abstract class Platform<T> extends SpriteGroupComponent<T>
     if (rand > 80) isMoving = true;
   }
 
-  // More on Platforms: Add _move method
+  void _move(double dt) {
+    if (!isMoving) return;
 
-  // More on Platforms: Override update method
+    final double gameWidth = gameRef.size.x;
+
+    if (position.x <= 0) {
+      direction = 1;
+    } else if (position.x >= gameWidth - size.x) {
+      direction = -1;
+    }
+
+    _velocity.x = direction * speed;
+
+    position += _velocity * dt;
+  }
+
+  @override
+  void update(double dt) {
+    _move(dt);
+    super.update(dt);
+  }
 }
 
 enum NormalPlatformState { only }
@@ -78,8 +96,6 @@ class NormalPlatform extends Platform<NormalPlatformState> {
   }
 }
 
-// Add platforms: Add NormalPlatform class
-
 enum BrokenPlatformState { cracked, broken }
 
 class BrokenPlatform extends Platform<BrokenPlatformState> {
@@ -104,8 +120,6 @@ class BrokenPlatform extends Platform<BrokenPlatformState> {
     current = BrokenPlatformState.broken;
   }
 }
-
-// More on Platforms: Add BrokenPlatform class
 
 enum SpringState { down, up }
 
@@ -151,9 +165,23 @@ class SpringBoard extends Platform<SpringState> {
   }
 }
 
+enum EnemyPlatformState { only }
 
+class EnemyPlatform extends Platform<EnemyPlatformState> {
+  EnemyPlatform({super.position});
 
+  @override
+  Future<void>? onLoad() async {
+    var randBool = Random().nextBool();
+    var enemySprite = randBool ? 'enemy_trash_can' : 'enemy_error';
 
-// Losing the game: Add EnemyPlatformState Enum
+    sprites = <EnemyPlatformState, Sprite>{
+      EnemyPlatformState.only:
+          await gameRef.loadSprite('game/$enemySprite.png'),
+    };
 
-// Losing the game: Add EnemyPlatform class
+    current = EnemyPlatformState.only;
+
+    return super.onLoad();
+  }
+}

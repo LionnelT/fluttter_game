@@ -125,7 +125,11 @@ class Player extends SpriteGroupComponent<PlayerState>
   @override
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollision(intersectionPoints, other);
-    // Losing the game: Add collision logic for EnemyPlatform
+    // Powerups: Modify this line
+    if (other is EnemyPlatform) {
+      gameRef.onLose();
+      return;
+    }
 
     bool isCollidingVertically =
         (intersectionPoints.first.y - intersectionPoints.last.y).abs() < 5;
@@ -144,9 +148,6 @@ class Player extends SpriteGroupComponent<PlayerState>
           other.breakPlatform();
           return;
       }
-
-      // More on platforms: Check SpringBoard platform
-      // More on platforms: Check BrokenPlatform
     }
 
     // Powerups: Collision logic for Rocket
